@@ -1,167 +1,177 @@
-# Sofa_Cluster
+Aquí tienes **todo el README en un solo archivo**, ya en **formato Markdown**, listo para copiar y pegar directamente en GitHub.
+Sin comentarios extras, sin explicaciones: **solo el archivo final**.
 
+---
+
+```markdown
+# SOFA_Cluster
 SOFA HPC Workflow – Ejecución de SOFA en Singularity dentro del Cluster HTPC
 
-## Requisitos
+Este repositorio contiene un flujo de trabajo mínimo para ejecutar **SOFA** dentro de un contenedor **Singularity** en un **cluster HPC (High-Performance Computing)** utilizando **SLURM**.
 
-- Singularity
+---
 
-    - https://sylabs.io/guides/3.5/user-guide/quick_start.html
+## 📌 Requisitos
+- Cuenta con acceso al **cluster HTPC**
+- Ubuntu u otra distribución Linux
+- Acceso SSH
+- Imagen Singularity con SOFA
 
+---
 
+## 📁 Estructura del repositorio
 
-## Instalación
+```
 
-### Instalación de Singularity
-- correr archivo de instalación de singularity wue sintala 
-
-1. Introducción
-
-Este proyecto entrega una guía completa para ejecutar SOFA dentro de una imagen Singularity en el cluster HTPC, incluyendo:
-
-Conexión al cluster
-
-Copia de scripts
-
-Descarga y uso de imágenes Singularity
-
-Ejecución de SOFA
-
-Ejecución de trabajos SLURM
-
-Flujo de trabajo reproducible para cualquier usuario
-
-## Estructura del repositorio
 sofa-hpc-workflow/
 │
-├── scripts/
-│   ├── build_image.sh
-│   ├── run_sofa.sh
-│   └── test_slurm.sh
-│
 ├── slurm/
-│   └── job_test.slurm
+│   └── job_test.slurm        # Archivo SLURM de ejemplo
 │
-└── README.md
+└── README.md                 # Documentación del proyecto
 
+````
 
-## Requisitos previos
+---
 
-Cuenta activa en el HTPC
+# 1. Acceso al Cluster HTPC
 
-Contraseña del correo institucional
+Para conectarse al cluster:
 
-Terminal (Linux/macOS/WSL)
-
-Git
-
-Conexión estable a internet
-
-Singularity disponible en el cluster
-
-
-## Acceso al HTPC
-
-
-Acceso SSH
+```bash
 ssh usuario@IP_DEL_CLUSTER
-
-
-Salir:
-
-exit
-
-
-
-Clonar el repositorio
-git clone https://github.com/usuario/sofa-hpc-workflow.git
-cd sofa-hpc-workflow
- 
-
-
- Qué es una imagen Singularity?
-
-Una imagen Singularity (.sif) es un contenedor diseñado para HPC:
-portátil, seguro, reproducible y compatible con SLURM.
+````
 
 Ejemplo:
 
-singularity exec sofa_image.sif python3 script.py
+```bash
+ssh username@172.16.105.194
+```
 
+Para salir:
 
+```bash
+exit
+```
 
-. Descargar o construir la imagen
-bash scripts/build_image.sh
+---
 
+# 2. Descargar la imagen de Singularity (SOFA)
 
-Este script descarga o construye la imagen sofa_image.sif.
+Descargar la imagen `.sif` desde:
 
-🧪 9. Verificar SOFA
+🔗 [https://drive.google.com/file/d/1CjY5nmMsOa7L5yRpA7l9OavdkGsw66-S/view?usp=sharing](https://drive.google.com/file/d/1CjY5nmMsOa7L5yRpA7l9OavdkGsw66-S/view?usp=sharing)
 
-Entrar a la imagen:
+Subir la imagen al cluster:
 
-singularity shell sofa_image.sif
+```bash
+scp sofa_hpc.sif usuario@172.16.105.194:/home/usuario/
+```
 
+---
+
+# 3. Clonar el repositorio
+
+```bash
+git clone https://github.com/usuario/sofa-hpc-workflow.git
+cd sofa-hpc-workflow
+```
+
+---
+
+# 4. ¿Qué es un Cluster HPC?
+
+Un **cluster HPC (High-Performance Computing)** es un conjunto de computadores (nodos) conectados entre sí que funcionan como un único sistema de alto rendimiento.
+
+Permite:
+
+* Ejecutar simulaciones grandes
+* Usar cientos o miles de núcleos de CPU
+* Acceder a GPUs de alto rendimiento
+* Compartir almacenamiento y recursos
+
+Se utiliza para tareas que exceden las capacidades de un computador personal.
+
+---
+
+# 5. ¿Qué es Singularity y por qué se usa en el cluster?
+
+**Singularity** es un sistema de contenedores diseñado específicamente para HPC.
+
+### Ventajas:
+
+* No requiere permisos de administrador
+* Seguro (no eleva privilegios)
+* Portátil y reproducible
+* Compatible con SLURM
+* Estándar en centros HPC (Docker está prohibido)
+
+Permite empaquetar **SOFA + dependencias** en una sola imagen `.sif`.
+
+---
+
+# 6. ¿Qué es CUDA / GPU?
+
+### GPU
+
+Unidad de procesamiento gráfico optimizada para cálculos paralelos masivos.
+En HPC se usa para simulaciones físicas, FEM, machine learning, etc.
+
+### CUDA
+
+Framework de NVIDIA para usar la GPU desde programas C++, Python, etc.
+
+Para usar GPU dentro del contenedor:
+
+```bash
+singularity exec --nv sofa_hpc.sif runSofa
+```
+
+---
+
+# 7. Ejecutar SOFA dentro del contenedor
 
 Ejecutar SOFA:
 
-runSofa
+```bash
+singularity exec sofa_hpc.sif runSofa
+```
 
-📄 10. Ejecutar un job SLURM
+Con soporte GPU:
 
-Enviar:
+```bash
+singularity exec --nv sofa_hpc.sif runSofa
+```
 
+---
+
+# 8. Enviar un trabajo con SLURM
+
+Enviar el archivo de ejemplo:
+
+```bash
 sbatch slurm/job_test.slurm
+```
 
+Ver trabajos en ejecución:
 
-Ver estado:
-
-squeue -u $USER
-
-
-Cancelar:
-
-scancel JOBID
-
-🔧 11. Comandos útiles
-
-Singularity
-
-singularity shell image.sif
-singularity exec image.sif comando
-singularity run image.sif
-
-
-SSH
-
-ssh usuario@ip
-exit
-
-
-SCP
-
-scp archivo usuario@ip:/path/
-scp -r carpeta usuario@ip:/path/
-
-
-SLURM
-
-sbatch archivo.slurm
+```bash
 squeue -u usuario
-scancel jobid
+```
 
-🧭 12. Flujo de trabajo recomendado
+Cancelar un trabajo:
 
-Clonar el repositorio
+```bash
+scancel JOB_ID
+```
 
-Copiar scripts al cluster
+---
 
-Descargar o construir la imagen
+# 9. Créditos
 
-Verificar ejecución de SOFA
+Repositorio mantenido por **Benjamín Pichun** para ejecución de simulaciones **SOFA en ambiente HPC** utilizando Singularity y SLURM.
 
-Ejecutar run_sofa.sh
+```
 
-Enviar job SLURM
+---
 
-Revisar resultados
